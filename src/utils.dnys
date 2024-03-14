@@ -59,6 +59,8 @@ function Util_FilterChatSender string(content string)
 	};
 };
 
+global cachedProductVersion string;
+set cachedProductVersion <= "";
 function QueryProductVersion string()
 {
 	local response string;
@@ -69,25 +71,31 @@ function QueryProductVersion string()
 
 	result "";
 
-	sys {curl "%PRODUCT_URL/%PRODUCT_PATH" --silent} response;
+	if ("%cachedProductVersion", -nt, "") {
+		result "%cachedProductVersion";
+	} else {
+		sys {curl "%PRODUCT_URL/%PRODUCT_PATH" --silent} response;
 
-	s_replace response "{" "";
-	s_replace response "}" "";
+		s_replace response "{" "";
+		s_replace response "}" "";
 
-	s_getlen "%PRODUCT_VER" verlen;
-	s_getlen "%response" reslen;
-	
-	s_find "%response" "%PRODUCT_VER" verpos;
-	
-	if (%verpos, -gr, 0) {
-		+= verpos %verlen;
-		+= verpos 3;
+		s_getlen "%PRODUCT_VER" verlen;
+		s_getlen "%response" reslen;
 		
-		-= reslen %verpos;
-		-- reslen;
+		s_find "%response" "%PRODUCT_VER" verpos;
 		
-		s_substr "%response" %verpos %reslen vertok;
-		
-		result "%vertok";
-	};
+		if (%verpos, -gr, 0) {
+			+= verpos %verlen;
+			+= verpos 3;
+			
+			-= reslen %verpos;
+			-- reslen;
+			
+			s_substr "%response" %verpos %reslen vertok;
+
+			set cachedProductVersion <= "%vertok";
+			
+			result "%vertok";
+		};
+	};	
 };

@@ -99,7 +99,9 @@ function irc_OnRecieve void(message string)
 		set join_ok <= true;
 		print "** Successfully joined channel!";
 		
-		irc_send irc "PRIVMSG #%IRC_CHANNEL :%IRC_WELCOMEMSG";
+		if ("%IRC_WELCOMEMSG", -nt, "") {
+			irc_send irc "PRIVMSG #%IRC_CHANNEL :%IRC_WELCOMEMSG";
+		};
 	};
 	
 	if (%join_ok, -eq, true) {
