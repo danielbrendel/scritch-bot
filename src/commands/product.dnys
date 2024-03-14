@@ -1,0 +1,35 @@
+# Bot command: !product
+
+function product_handle void(handle string, cmd string, user string)
+{
+    local spaceindex int;
+    local target string;
+    local corlen int;
+    local subcmd string;
+
+    s_find "%cmd" " " spaceindex;
+
+    if (%spaceindex, -gr, 0) {
+        s_substr "%cmd" %spaceindex -1 target;
+
+        if (%target, -nt, "") {
+            s_getlen "%target" corlen;
+            -- corlen;
+
+            s_substr "%target" 1 %corlen subcmd;
+            
+            if ("%subcmd", -eq, "version") {
+                local prodver string;
+                call QueryProductVersion() => prodver;
+
+                irc_send %handle "PRIVMSG #%IRC_CHANNEL :Current version of %PRODUCT_NAME: %prodver";
+            } elseif ("%subcmd", -eq, "url") {
+                irc_send %handle "PRIVMSG #%IRC_CHANNEL :%PRODUCT_URL";
+            } elseif ("%subcmd", -eq, "about") {
+                irc_send %handle "PRIVMSG #%IRC_CHANNEL :%PRODUCT_ABOUT";
+            } else {
+                irc_send %handle "PRIVMSG #%IRC_CHANNEL :Unknown command argument: %subcmd";
+            };
+        };
+    };
+};

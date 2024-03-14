@@ -13,6 +13,12 @@ const INFO_REDDIT string <= "";
 const INFO_YOUTUBE string <= "";
 const INFO_INSTAGRAM string <= "";
 
+const PRODUCT_NAME string <= "";
+const PRODUCT_URL string <= "";
+const PRODUCT_PATH string <= "";
+const PRODUCT_VER string <= "";
+const PRODUCT_ABOUT string <= "";
+
 const NUM_CREEPER_SEQUENCE int <= 25;
 
 function Config_LoadQuotes void()

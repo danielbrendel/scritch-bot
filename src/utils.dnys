@@ -58,3 +58,36 @@ function Util_FilterChatSender string(content string)
 		};
 	};
 };
+
+function QueryProductVersion string()
+{
+	local response string;
+	local reslen int;
+	local verpos int;
+	local verlen int;
+	local vertok string;
+
+	result "";
+
+	sys {curl "%PRODUCT_URL/%PRODUCT_PATH" --silent} response;
+
+	s_replace response "{" "";
+	s_replace response "}" "";
+
+	s_getlen "%PRODUCT_VER" verlen;
+	s_getlen "%response" reslen;
+	
+	s_find "%response" "%PRODUCT_VER" verpos;
+	
+	if (%verpos, -gr, 0) {
+		+= verpos %verlen;
+		+= verpos 3;
+		
+		-= reslen %verpos;
+		-- reslen;
+		
+		s_substr "%response" %verpos %reslen vertok;
+		
+		result "%vertok";
+	};
+};

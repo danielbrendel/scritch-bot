@@ -12,7 +12,8 @@ static_array arrCommands string (
     "quote",
     "slap",
     "coffee",
-    "creeper"
+    "creeper",
+    "product"
 );
 
 function Cmd_HandleCommand bool(handle string, cmd string, user string)
