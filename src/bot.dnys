@@ -1,4 +1,4 @@
-# IRC Bot test script
+# Scritch main script file
 
 require "array";
 require "strings";
@@ -7,7 +7,7 @@ require "irc";
 require "envvars";
 require "miscutils";
 
-const BOT_VERSION string <= "Scritch v1.0 created in dnyScript.";
+const BOT_VERSION string <= "Scritch: Twitch Chat Bot v1.0 created in dnyScript.";
 
 global join_ok bool;
 global serverIdent string;
@@ -21,11 +21,12 @@ set serverIdent <= "";
 set verbose <= false;
 set fileconfig <= "";
 
+print "%BOT_VERSION";
+print "";
+
 for (i, 0, %argc, -inc) {
 	if ("%argv[%i]", -eq, "--verbose") {
 		set verbose <= true;
-	} elseif ("%argv[%i]", -eq, "--version") {
-		print "%BOT_VERSION";
 	} elseif ("%argv[%i]", -eq, "--sysinfo") {
 		print "Running bot on %OS @ %PROCESSOR_ARCHITECTURE (%COMPUTERNAME\%USERNAME)";
 	} else {
@@ -54,7 +55,9 @@ exec "src/commands/commands.dnys";
 
 function HandleUserCommand void(user string, command string)
 {
-	print "User command: %command by %user";
+	if (%verbose, -eq, true) {
+		print "User command: %command by %user";
+	};
 	
 	local cmdfound bool;
 
@@ -95,10 +98,15 @@ function irc_OnRecieve void(message string)
 		s_find "%message" "PING" find;
 		if (%find, -eq, 0) {
 			local ping string;
+
 			s_substr "%message" 5 -1 ping;
 			set serverIdent <= "%ping";
-			print "Pong: %ping";
+			
 			irc_send irc "PONG %ping";
+
+			if (%verbose, -eq, true) {
+				print "Pong: %ping";
+			};
 		};
 		
 		s_find "%message" "PRIVMSG #" find;
@@ -134,24 +142,8 @@ function irc_OnError void(errorcode int)
 	print "Error occured: %errorcode";
 };
 
-function KeyEventAbort void(down bool, shift bool, ctrl bool, alt bool)
-{
-	if (%down, -eq, true) {
-		if (%ctrl, -eq, true) {
-			print "Exit command triggered!";
-			#quit;
-		};
-	};
-};
-
 global valid bool;
 set valid <= true;
-
-print "Scritch: Twitch Chat Bot developed in dnyScript";
-print "Powered by AquaShell v1.0";
-print "";
-
-aut_addkeyevent "KeyEventAbort" 70 void;
 
 print "Connecting to server...";
 irc_spawn irc "%IRC_SERVER" %IRC_PORT valid;
@@ -165,11 +157,8 @@ while (%valid, -eq, true) {
 	};
 
 	irc_process irc;
-	aut_procevents;
 };
 
 irc_release irc;
 
 print "Done!";
-
-pause;
