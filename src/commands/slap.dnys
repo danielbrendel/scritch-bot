@@ -1,0 +1,17 @@
+# Bot command: !slap
+
+function slap_handle void(handle string, cmd string, user string)
+{
+    local spaceindex int;
+    local target string;
+
+    s_find "%cmd" " " spaceindex;
+
+    if (%spaceindex, -gr, 0) {
+        s_substr "%cmd" %spaceindex -1 target;
+
+        if (%target, -nt, "") {
+            irc_send %handle "PRIVMSG #%IRC_CHANNEL :%user slaps %target around a bit with a large trout";
+        };
+    };
+};

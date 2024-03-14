@@ -1,0 +1,18 @@
+# Quotes script file
+
+dynamic_array arrQuotes string 1 ("");
+
+function loadQuotes void()
+{
+    call Config_LoadQuotes() => void;
+};
+
+function getQuote string(index int)
+{
+    result %arrQuotes[%index];
+};
+
+function getQuoteCount int()
+{
+    result %arrQuotes.length;
+};

@@ -3,6 +3,7 @@
 require "array";
 require "strings";
 require "auto";
+require "fileio";
 require "irc";
 require "envvars";
 require "miscutils";
@@ -15,6 +16,7 @@ global verbose bool;
 global fileconfig string;
 global argpos int;
 global argtok string;
+global rootPath string;
 
 set join_ok <= false;
 set serverIdent <= "";
@@ -23,6 +25,9 @@ set fileconfig <= "";
 
 print "%BOT_VERSION";
 print "";
+
+getscriptpath rootPath;
+s_replace rootPath {\src\} "";
 
 for (i, 0, %argc, -inc) {
 	if ("%argv[%i]", -eq, "--verbose") {
@@ -51,7 +56,10 @@ if ("%fileconfig", -nt, "") {
 };
 
 exec "src/utils.dnys";
+exec "src/quotes.dnys";
 exec "src/commands/commands.dnys";
+
+call Config_LoadQuotes() => void;
 
 function HandleUserCommand void(user string, command string)
 {

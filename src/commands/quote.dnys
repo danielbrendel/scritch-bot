@@ -1,0 +1,19 @@
+# Bot command: !quote
+
+function quote_handle void(handle string, cmd string, user string)
+{
+    local count int;
+    local rnd int;
+    local quote string;
+
+    call getQuoteCount() => count;
+    if (%count, -gr, 0) {
+        -- count;
+        random 0 %count rnd;
+        ++ rnd;
+
+        call getQuote(%rnd) => quote;
+
+        irc_send %handle "PRIVMSG #%IRC_CHANNEL :%quote";
+    };
+};

@@ -12,3 +12,14 @@ const INFO_DISCORD string <= "";
 const INFO_REDDIT string <= "";
 const INFO_YOUTUBE string <= "";
 const INFO_INSTAGRAM string <= "";
+
+const NUM_CREEPER_SEQUENCE int <= 25;
+
+function Config_LoadQuotes void()
+{
+    item_append arrQuotes "An interesting quote #1";
+    item_append arrQuotes "An interesting quote #2";
+    item_append arrQuotes "An interesting quote #3";
+    item_append arrQuotes "An interesting quote #4";
+    item_append arrQuotes "An interesting quote #5";
+};

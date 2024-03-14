@@ -7,7 +7,12 @@ static_array arrCommands string (
     "discord",
     "reddit",
     "youtube",
-    "instagram"
+    "instagram",
+    "cool",
+    "quote",
+    "slap",
+    "coffee",
+    "creeper"
 );
 
 function Cmd_HandleCommand bool(handle string, cmd string, user string)

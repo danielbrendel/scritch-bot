@@ -1,0 +1,14 @@
+# Bot command: !creeper
+
+function creeper_handle void(handle string, cmd string, user string)
+{
+    local txtcreeper string;
+
+    set txtcreeper <= "";
+    
+    for (i, 0, %NUM_CREEPER_SEQUENCE, -inc) {
+        set txtcreeper <= "%txtcreeper SSSsss";
+    };
+
+    irc_send %handle "PRIVMSG #%IRC_CHANNEL :%txtcreeper";
+};
