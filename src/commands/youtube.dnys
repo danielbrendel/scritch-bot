@@ -1,0 +1,6 @@
+# Bot command: !youtube
+
+function youtube_handle void(handle string, cmd string, user string)
+{
+    irc_send %handle "PRIVMSG #%IRC_CHANNEL :%INFO_YOUTUBE";
+};

@@ -1,0 +1,14 @@
+# Bot settings config script file
+
+const IRC_SERVER string <= "irc.chat.twitch.tv";
+const IRC_PORT int <= 5000;
+const IRC_OAUTHTOKEN string <= "oauth-token-goes-here";
+const IRC_USERNAME string <= "username-of-bot";
+const IRC_CHANNEL string <= "channel-to-join";
+const IRC_WELCOMEMSG string <= "Hey there, I am a Twitch Chat Bot";
+
+const INFO_GITHUB string <= "";
+const INFO_DISCORD string <= "";
+const INFO_REDDIT string <= "";
+const INFO_YOUTUBE string <= "";
+const INFO_INSTAGRAM string <= "";

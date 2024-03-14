@@ -1,0 +1,32 @@
+# Commands script file
+
+static_array arrCommands string (
+	"version",
+    "time",
+    "github",
+    "discord",
+    "reddit",
+    "youtube",
+    "instagram"
+);
+
+function Cmd_HandleCommand bool(handle string, cmd string, user string)
+{
+    local token int;
+    
+    result false;
+
+    for (i, 0, %arrCommands.length, -inc) {
+        s_find "%cmd" "!%arrCommands[%i]" token;
+        
+        if (%token, -eq, 0) {
+            call %arrCommands[%i]_handle("%handle", "%cmd", "%user") => void;
+
+            result true;
+        };
+    };
+};
+
+for (i, 0, %arrCommands.length, -inc) {
+    exec "src/commands/%arrCommands[%i].dnys";
+};

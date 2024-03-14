@@ -1,0 +1,175 @@
+# IRC Bot test script
+
+require "array";
+require "strings";
+require "auto";
+require "irc";
+require "envvars";
+require "miscutils";
+
+const BOT_VERSION string <= "Scritch v1.0 created in dnyScript.";
+
+global join_ok bool;
+global serverIdent string;
+global verbose bool;
+global fileconfig string;
+global argpos int;
+global argtok string;
+
+set join_ok <= false;
+set serverIdent <= "";
+set verbose <= false;
+set fileconfig <= "";
+
+for (i, 0, %argc, -inc) {
+	if ("%argv[%i]", -eq, "--verbose") {
+		set verbose <= true;
+	} elseif ("%argv[%i]", -eq, "--version") {
+		print "%BOT_VERSION";
+	} elseif ("%argv[%i]", -eq, "--sysinfo") {
+		print "Running bot on %OS @ %PROCESSOR_ARCHITECTURE (%COMPUTERNAME\%USERNAME)";
+	} else {
+		s_find "%argv[%i]" "--profile:" argpos;
+		if (%argpos, -eq, 0) {
+			s_substr "%argv[%i]" 10 -1 argtok;
+			s_getlen "%argtok" argpos;
+			
+			if (%argpos, -gr, 0) {
+				set fileconfig <= "%argtok";
+
+				print "Using config: %fileconfig";
+			};
+		};
+	};
+};
+
+if ("%fileconfig", -nt, "") {
+	exec "src/%fileconfig.dnys";
+} else {
+	exec "src/config.dnys";
+};
+
+exec "src/utils.dnys";
+exec "src/commands/commands.dnys";
+
+function HandleUserCommand void(user string, command string)
+{
+	print "User command: %command by %user";
+	
+	local cmdfound bool;
+
+	call Cmd_HandleCommand(irc, "%command", "%user") => cmdfound;
+
+	if (%cmdfound, -eq, false) {
+		irc_send irc "PRIVMSG #%IRC_CHANNEL :Unknown command %command";
+	};
+};
+
+function irc_OnConnected void()
+{
+	print "Connected to server";
+	
+	irc_send irc "PASS oauth:%IRC_OAUTHTOKEN";
+	irc_send irc "NICK %IRC_USERNAME";
+	irc_send irc "JOIN #%IRC_CHANNEL";
+};
+
+function irc_OnRecieve void(message string)
+{
+	if (%verbose, -eq, true) {
+		print "%message";
+	};
+	
+	local find int;
+	
+	s_find "%message" ":%IRC_USERNAME.tmi.twitch.tv 353" find;
+	
+	if (%find, -eq, 0) {
+		set join_ok <= true;
+		print "** Successfully joined channel!";
+		
+		irc_send irc "PRIVMSG #%IRC_CHANNEL :%IRC_WELCOMEMSG";
+	};
+	
+	if (%join_ok, -eq, true) {
+		s_find "%message" "PING" find;
+		if (%find, -eq, 0) {
+			local ping string;
+			s_substr "%message" 5 -1 ping;
+			set serverIdent <= "%ping";
+			print "Pong: %ping";
+			irc_send irc "PONG %ping";
+		};
+		
+		s_find "%message" "PRIVMSG #" find;
+		if (%find, -gr, 0) {
+			local chatMsg string;
+			local chatSender string;
+			local cmdchar int;
+			
+			call Util_FilterChatMessage("%message") => chatMsg;
+			call Util_FilterChatSender("%message") => chatSender;
+
+			s_find "%chatMsg" "!" cmdchar;
+			if (%cmdchar, -eq, 0) {
+				local cmdtoken string;
+				
+				s_substr "%chatMsg" %cmdchar -1 cmdtoken;
+			
+				call HandleUserCommand("%chatSender", "%cmdtoken") => void;
+			} else {
+				print "[%chatSender] %chatMsg";
+			};
+		};
+	};
+};
+
+function irc_OnDisconnected void()
+{
+	print "Disconnected from server";
+};
+
+function irc_OnError void(errorcode int)
+{
+	print "Error occured: %errorcode";
+};
+
+function KeyEventAbort void(down bool, shift bool, ctrl bool, alt bool)
+{
+	if (%down, -eq, true) {
+		if (%ctrl, -eq, true) {
+			print "Exit command triggered!";
+			#quit;
+		};
+	};
+};
+
+global valid bool;
+set valid <= true;
+
+print "Scritch: Twitch Chat Bot developed in dnyScript";
+print "Powered by AquaShell v1.0";
+print "";
+
+aut_addkeyevent "KeyEventAbort" 70 void;
+
+print "Connecting to server...";
+irc_spawn irc "%IRC_SERVER" %IRC_PORT valid;
+
+while (%valid, -eq, true) {
+	irc_isvalid irc valid;
+	if (%valid, -eq, false) {
+		print "IRC error!";
+		pause;
+		exit;
+	};
+
+	irc_process irc;
+	aut_procevents;
+};
+
+irc_release irc;
+
+print "Done!";
+
+pause;

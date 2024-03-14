@@ -1,0 +1,60 @@
+# Utility functions
+
+function Util_FilterChatMessage string(content string)
+{
+	local raute int;
+	local result string;
+	
+	set result <= "";
+	
+	result "%result";
+	
+	s_find "%content" "PRIVMSG #" raute;
+	if (%raute, -gr, 0) {
+		local subtoken string;
+		
+		s_substr "%content" %raute -1 subtoken;
+		
+		if ("%subtoken", -nt, "") {
+			local colon int;
+			
+			s_find "%subtoken" ":" colon;
+			if (%colon, -gr, 0) {
+				++ colon;
+				
+				s_substr "%subtoken" %colon -1 result;
+				
+				result "%result";
+			};
+		};
+	};
+};
+
+function Util_FilterChatSender string(content string)
+{
+	local colon int;
+	local exclamation int;
+	local result string;
+	
+	set result <= "";
+	
+	result "%result";
+	
+	s_find "%content" ":" colon;
+	s_find "%content" "!" exclamation;
+	
+	if (%colon, -eq, 0) {
+		if (%exclamation, -gr, 1) {
+			local tokenlen int;
+			
+			set tokenlen <= %exclamation;
+			
+			++ colon;
+			-= tokenlen %colon;
+			
+			s_substr "%content" %colon %tokenlen result;
+			
+			result "%result";
+		};
+	};
+};
