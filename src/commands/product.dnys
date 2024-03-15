@@ -1,5 +1,7 @@
 # Bot command: !product
 
+global cached_gh_stats string;
+
 function product_handle void(handle string, cmd string, user string)
 {
     local spaceindex int;
@@ -27,6 +29,12 @@ function product_handle void(handle string, cmd string, user string)
                 irc_send %handle "PRIVMSG #%IRC_CHANNEL :%PRODUCT_URL";
             } elseif ("%subcmd", -eq, "about") {
                 irc_send %handle "PRIVMSG #%IRC_CHANNEL :%PRODUCT_ABOUT";
+            } elseif ("%subcmd", -eq, "stats") {
+                if ("%cached_gh_stats", -eq, "") {
+                    sys {curl "%PRODUCT_GITHUB_API" --header "User-Agent: ScritchBot" --header "Accept: application/vnd.github.v3+json" --silent | php -r "$json = json_decode(file_get_contents('php://stdin')); echo '[GitHub Stats] Stars: ' . $json->stargazers_count . ' | Forks: ' . $json->forks_count . ' | Open Issues: ' . $json->open_issues;"} cached_gh_stats;
+                };
+                
+                irc_send %handle "PRIVMSG #%IRC_CHANNEL :%cached_gh_stats";
             } else {
                 irc_send %handle "PRIVMSG #%IRC_CHANNEL :Unknown command argument: %subcmd";
             };
