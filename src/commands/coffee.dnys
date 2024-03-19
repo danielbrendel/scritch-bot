@@ -5,13 +5,18 @@ function coffee_handle void(handle string, cmd string, user string)
     local spaceindex int;
     local target string;
 
+    local unicoffee string;
+    s_fmtescseq "\2615;" unicoffee;
+
     s_find "%cmd" " " spaceindex;
 
     if (%spaceindex, -gr, 0) {
         s_substr "%cmd" %spaceindex -1 target;
 
         if (%target, -nt, "") {
-            irc_send %handle "PRIVMSG #%IRC_CHANNEL :%user offers %target a hot coffee. VirtualHug";
+            irc_send %handle "PRIVMSG #%IRC_CHANNEL :%user offers %target a hot coffee. %unicoffee";
         };
+    } else {
+        irc_send %handle "PRIVMSG #%IRC_CHANNEL :Hey %user, here's a hot coffee. Enjoy! %unicoffee";
     };
 };

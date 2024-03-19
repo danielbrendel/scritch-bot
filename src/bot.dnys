@@ -6,6 +6,7 @@ require "auto";
 require "fileio";
 require "irc";
 require "envvars";
+require "datetime";
 require "miscutils";
 
 const BOT_VERSION string <= "Scritch: Twitch Chat Bot v1.0 created in dnyScript for the AquaShell scripting environment. Check out AquaShell: https://github.com/danielbrendel/dnyAquaShell";
@@ -49,10 +50,25 @@ for (i, 0, %argc, -inc) {
 	};
 };
 
+function load_config void(file string)
+{
+	local chkfile bool;
+	fexists "%file" chkfile;
+	if (%chkfile, -eq, false) {
+		print "Fatal: Config file not found: %file";
+		print "";
+		print "Hint: You need to create a config file from config.dnys.example and specify your settings";
+
+		exit;
+	} else {
+		exec "%file";
+	};
+};
+
 if ("%fileconfig", -nt, "") {
-	exec "src/%fileconfig.dnys";
+	call load_config("src/%fileconfig.dnys") => void;
 } else {
-	exec "src/config.dnys";
+	call load_config("src/config.dnys") => void;
 };
 
 exec "src/utils.dnys";
