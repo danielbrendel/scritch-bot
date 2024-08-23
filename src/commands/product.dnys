@@ -2,6 +2,11 @@
 
 global cached_gh_stats string;
 
+function fetch_product_stats void()
+{
+    sys {curl "%PRODUCT_GITHUB_API" --header "User-Agent: ScritchBot" --header "Accept: application/vnd.github.v3+json" --silent | php -r "$json = json_decode(file_get_contents('php://stdin')); echo '[GitHub Stats] Stars: ' . $json->stargazers_count . ' | Forks: ' . $json->forks_count . ' | Open Issues: ' . $json->open_issues;"} cached_gh_stats;
+};
+
 function product_handle void(handle string, cmd string, user string)
 {
     local spaceindex int;
@@ -31,7 +36,7 @@ function product_handle void(handle string, cmd string, user string)
                 irc_send %handle "PRIVMSG #%IRC_CHANNEL :%PRODUCT_ABOUT";
             } elseif ("%subcmd", -eq, "stats") {
                 if ("%cached_gh_stats", -eq, "") {
-                    sys {curl "%PRODUCT_GITHUB_API" --header "User-Agent: ScritchBot" --header "Accept: application/vnd.github.v3+json" --silent | php -r "$json = json_decode(file_get_contents('php://stdin')); echo '[GitHub Stats] Stars: ' . $json->stargazers_count . ' | Forks: ' . $json->forks_count . ' | Open Issues: ' . $json->open_issues;"} cached_gh_stats;
+                    call fetch_product_stats() => void;
                 };
                 
                 irc_send %handle "PRIVMSG #%IRC_CHANNEL :%cached_gh_stats";
@@ -41,3 +46,5 @@ function product_handle void(handle string, cmd string, user string)
         };
     };
 };
+
+call fetch_product_stats() => void;
