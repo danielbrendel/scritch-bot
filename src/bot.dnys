@@ -33,7 +33,7 @@ for (i, 0, %argc, -inc) {
 	if ("%argv[%i]", -eq, "--verbose") {
 		set verbose <= true;
 	} elseif ("%argv[%i]", -eq, "--sysinfo") {
-		print "Running bot on %OS @ %PROCESSOR_ARCHITECTURE (%COMPUTERNAME\%USERNAME)";
+		print "Running bot on %OS @ %PROCESSOR_ARCHITECTURE (%COMPUTERNAME\%USERNAME)%CR%LF";
 	} else {
 		s_find "%argv[%i]" "--profile:" argpos;
 		if (%argpos, -eq, 0) {
