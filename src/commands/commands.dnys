@@ -1,13 +1,12 @@
 # Commands script file
 
-static_array arrCommands string (
+array arrCommands string 12 (
 	"version",
-    "time",
     "github",
     "discord",
-    "reddit",
     "youtube",
     "instagram",
+    "mastodon",
     "cool",
     "quote",
     "slap",

@@ -7,7 +7,6 @@ require "fileio";
 require "irc";
 require "envvars";
 require "datetime";
-require "miscutils";
 
 const BOT_VERSION string <= "Scritch: Twitch Chat Bot v1.0 created in dnyScript for the AquaShell scripting environment. Check out AquaShell: https://github.com/danielbrendel/dnyAquaShell";
 

@@ -1,6 +1,6 @@
 # Quotes script file
 
-dynamic_array arrQuotes string 1 ("");
+array arrQuotes string 1 ("");
 
 function loadQuotes void()
 {
