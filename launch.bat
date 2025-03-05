@@ -1,2 +1,2 @@
 @echo off
-dnyAquaShell.exe -e "%cd%\src\bot.dnys" %*
+dnyAquaShell.exe "%cd%\src\bot.dnys" %*
