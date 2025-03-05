@@ -24,9 +24,9 @@ const NUM_CREEPER_SEQUENCE int <= 25;
 
 function Config_LoadQuotes void()
 {
-    item_append arrQuotes "An interesting quote #1";
-    item_append arrQuotes "An interesting quote #2";
-    item_append arrQuotes "An interesting quote #3";
-    item_append arrQuotes "An interesting quote #4";
-    item_append arrQuotes "An interesting quote #5";
+    array_item_append arrQuotes "An interesting quote #1";
+    array_item_append arrQuotes "An interesting quote #2";
+    array_item_append arrQuotes "An interesting quote #3";
+    array_item_append arrQuotes "An interesting quote #4";
+    array_item_append arrQuotes "An interesting quote #5";
 };
